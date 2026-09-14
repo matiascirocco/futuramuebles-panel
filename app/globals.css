@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-fondo: #06080b;
+  --color-superficie: #0c1016;
+  --color-borde: #1b222c;
+  --color-texto: #f2f5f8;
+  --color-tenue: #7d8896;
+
+  /* El azul de la marca, el mismo del favicon del sitio. */
+  --color-acento: #154470;
+  --color-ok: #4ade80;
+  --color-aviso: #f5c451;
+  --color-alerta: #f87171;
+}
+
+/* Tema claro: se activa con data-theme="claro" en <html>. */
+[data-theme="claro"] {
+  --color-fondo: #f5f7f9;
+  --color-superficie: #ffffff;
+  --color-borde: #e2e6ea;
+  --color-texto: #10141a;
+  --color-tenue: #68717d;
+}
+
+html { color-scheme: dark; }
+[data-theme="claro"] { color-scheme: light; }
+
+body {
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Los títulos de sección: chiquitos, espaciados, en gris. */
+.eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-tenue);
+}
+
+/*
+ * Solo opacidad, sin transform.
+ *
+ * Una animación que termina en `transform: none` con fill-mode `both` deja ese
+ * valor pegado para siempre y pisa cualquier transform propio del elemento —un
+ * centrado, un scale de hover—. Es un bug que ya nos costó dos arreglos en el
+ * otro panel; acá no se repite.
+ */
+@keyframes aparecer {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.aparecer { animation: aparecer 0.4s ease both; }
+
+/* Los campos de formulario, que se repiten en todas las pantallas. */
+.campo {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-borde);
+  background: color-mix(in srgb, var(--color-fondo) 60%, transparent);
+  padding: 0.75rem 1rem;
+  outline: none;
+}
+.campo:focus { border-color: var(--color-acento); }
