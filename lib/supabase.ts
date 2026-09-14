@@ -13,6 +13,25 @@ if (typeof window !== 'undefined') {
 let cliente: SupabaseClient | null = null;
 
 /**
+ * Qué falta para poder conectarse, o null si está todo.
+ *
+ * Existe porque `conectar()` tira una excepción, y una excepción adentro de un
+ * route handler sale como un 500 pelado: el navegador no muestra nada y el
+ * motivo queda enterrado en los logs de Vercel. Para el único endpoint al que
+ * se llega sin sesión —el login— eso convierte "falta cargar una variable" en
+ * "el panel no anda y no sé por qué".
+ */
+export function faltaConfig(): string | null {
+  const falta = [
+    !process.env.SUPABASE_URL && 'SUPABASE_URL',
+    !process.env.SUPABASE_SERVICE_ROLE_KEY && 'SUPABASE_SERVICE_ROLE_KEY',
+    !process.env.AUTH_SECRET && 'AUTH_SECRET',
+  ].filter(Boolean) as string[];
+
+  return falta.length > 0 ? falta.join(' y ') : null;
+}
+
+/**
  * Se crea la primera vez que se usa, no al importar el módulo.
  *
  * Si se creara al importar, `next build` lo evalúa mientras analiza las rutas y

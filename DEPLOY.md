@@ -87,14 +87,16 @@ en esa base.
 
 1. [vercel.com/new](https://vercel.com/new) → importá el repo
 2. Framework: **Next.js** (lo detecta solo)
-3. Antes de tocar Deploy, abrí **Environment Variables** y cargá:
+3. Antes de tocar Deploy, abrí **Environment Variables** y cargá las tres.
+   Sin ellas el panel compila igual pero el login contesta *"El panel está
+   a medio configurar"*: el cliente de Supabase se conecta recién cuando
+   alguien lo usa, no al compilar.
 
 | Variable | Valor |
 |---|---|
 | `SUPABASE_URL` | el Project URL del paso 1 |
 | `SUPABASE_SERVICE_ROLE_KEY` | la service_role key del paso 1 |
 | `AUTH_SECRET` | generalo con el comando de abajo |
-| `NEXT_PUBLIC_EMPRESA_NOMBRE` | `Futura Muebles` |
 
 ```bash
 openssl rand -base64 32

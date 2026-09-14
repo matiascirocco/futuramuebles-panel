@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { db } from '@/lib/supabase';
+import { db, faltaConfig } from '@/lib/supabase';
 import { crearSesion } from '@/lib/session';
 
 const MAX_INTENTOS = 5;
@@ -18,6 +18,31 @@ async function intentosRecientes(ip: string) {
 }
 
 export async function POST(req: Request) {
+  // Sin esto, un deploy al que le falta una variable contesta 500 sin cuerpo y
+  // no hay forma de saber qué pasó desde afuera.
+  const falta = faltaConfig();
+  if (falta) {
+    console.error('[login] falta configuración:', falta);
+    return NextResponse.json(
+      { error: `El panel está a medio configurar: falta ${falta} en las variables de entorno.` },
+      { status: 503 }
+    );
+  }
+
+  try {
+    return await entrar(req);
+  } catch (e) {
+    // La base caída, una URL mal escrita, la red. Lo que no puede pasar es que
+    // el navegador reciba un 500 sin cuerpo y no haya nada que mirar.
+    console.error('[login] error inesperado:', e);
+    return NextResponse.json(
+      { error: 'No se pudo conectar con la base de datos' },
+      { status: 503 }
+    );
+  }
+}
+
+async function entrar(req: Request) {
   const ip =
     req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
     req.headers.get('x-real-ip') ??
