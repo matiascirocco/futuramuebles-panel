@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     // el navegador reciba un 500 sin cuerpo y no haya nada que mirar.
     console.error('[login] error inesperado:', e);
     return NextResponse.json(
-      { error: 'No se pudo conectar con la base de datos' },
+      { error: 'No se pudo llegar a la base de datos. Revisá SUPABASE_URL y la service_role key.' },
       { status: 503 }
     );
   }
@@ -72,8 +72,22 @@ async function entrar(req: Request) {
   // buscar el problema exactamente donde no está.
   if (errorConsulta) {
     console.error('[login] la consulta falló:', errorConsulta);
+
+    // Durante la puesta en marcha el error casi siempre es el mismo: el
+    // proyecto de Supabase está creado pero vacío. Decirlo por su nombre
+    // ahorra ir a buscar el log de Vercel para enterarse de eso.
+    //
+    // 42P01 es "undefined_table" de Postgres; PGRST205 es PostgREST cuando la
+    // tabla no está en su cache de esquema. No hay nada sensible en admitir
+    // que un panel todavía no tiene base: no dice quién existe ni qué guarda.
+    const sinTablas = errorConsulta.code === '42P01' || errorConsulta.code === 'PGRST205';
+
     return NextResponse.json(
-      { error: 'No se pudo conectar con la base de datos' },
+      {
+        error: sinTablas
+          ? 'La base está vacía: falta correr db/schema.sql en el SQL Editor de Supabase.'
+          : `La base rechazó la consulta (${errorConsulta.code ?? 'sin código'}). Mirá el log de Vercel.`,
+      },
       { status: 503 }
     );
   }
