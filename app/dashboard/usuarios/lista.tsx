@@ -47,8 +47,8 @@ export function Lista({ yo }: { yo: string }) {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-10 pl-24">
-      <header className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-[var(--color-borde)] pb-6">
+    <div className="pantalla max-w-4xl">
+      <header className="mb-8 pr-12 md:pr-0 flex flex-wrap items-end justify-between gap-4 border-b border-[var(--color-borde)] pb-6">
         <div>
           <p className="eyebrow">Futura Muebles</p>
           <h1 className="text-3xl font-bold">Usuarios</h1>
@@ -80,7 +80,7 @@ export function Lista({ yo }: { yo: string }) {
       )}
 
       <div className="overflow-x-auto rounded-2xl border border-[var(--color-borde)]">
-        <table className="w-full text-left">
+        <table className="w-full min-w-[34rem] text-left">
           <thead>
             <tr className="border-b border-[var(--color-borde)]">
               {['Nombre', 'Email', 'Rol', 'Estado', 'Desde', ''].map((h, n) => (
@@ -210,8 +210,8 @@ function FormularioUsuario({
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-4">
-      <div className="mx-auto my-8 w-full max-w-lg rounded-2xl border border-[var(--color-borde)] bg-[var(--color-superficie)] p-6">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-2 md:p-4">
+      <div className="modal w-full max-w-lg rounded-2xl border border-[var(--color-borde)] bg-[var(--color-superficie)]">
         <h2 className="mb-6 text-xl font-bold">Nuevo usuario</h2>
 
         <label className="mb-2 block text-sm">Nombre *</label>

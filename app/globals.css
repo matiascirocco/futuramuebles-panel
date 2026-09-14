@@ -67,3 +67,44 @@ body {
   outline: none;
 }
 .campo:focus { border-color: var(--color-acento); }
+
+/*
+ * El contenedor de cada pantalla.
+ *
+ * En el celular no hay hueco a la izquierda —el menú está abajo— y sí hay que
+ * dejar lugar al pie de esa barra. En escritorio se invierte: el menú es un
+ * riel vertical y el aire va a la izquierda.
+ */
+.pantalla {
+  margin-inline: auto;
+  padding: 1.5rem 1rem;
+  padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) {
+  .pantalla {
+    padding: 2.5rem 1.5rem 2.5rem 6rem;
+  }
+}
+
+/* La barra de navegación del celular, pegada abajo del todo. */
+.barra-abajo {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/*
+ * Los modales en el celular arrancan casi pegados arriba y llegan hasta abajo:
+ * con el margen de escritorio, un formulario largo deja los botones fuera de
+ * alcance y hay que adivinar que se scrollea.
+ */
+.modal {
+  margin: 0.5rem auto;
+  padding: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    margin: 2rem auto;
+    padding: 1.5rem;
+  }
+}

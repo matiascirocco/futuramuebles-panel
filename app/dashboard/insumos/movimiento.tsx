@@ -86,8 +86,8 @@ export function Movimiento({
   const unidad = insumo.unidad ?? 'u.';
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-4">
-      <div className="mx-auto my-8 w-full max-w-lg rounded-2xl border border-[var(--color-borde)] bg-[var(--color-superficie)] p-6">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-2 md:p-4">
+      <div className="modal w-full max-w-lg rounded-2xl border border-[var(--color-borde)] bg-[var(--color-superficie)]">
         <p className="eyebrow mb-1">Mover stock</p>
         <h2 className="mb-1 text-xl font-bold">{insumo.nombre}</h2>
         <p className="mb-6 text-sm text-[var(--color-tenue)]">

@@ -42,8 +42,8 @@ export default function Movimientos() {
   });
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10 pl-24">
-      <header className="mb-8 border-b border-[var(--color-borde)] pb-6">
+    <div className="pantalla max-w-5xl">
+      <header className="mb-8 pr-12 md:pr-0 border-b border-[var(--color-borde)] pb-6">
         <p className="eyebrow">Futura Muebles</p>
         <h1 className="text-3xl font-bold">Movimientos</h1>
         <p className="mt-2 text-sm text-[var(--color-tenue)]">
@@ -76,7 +76,53 @@ export default function Movimientos() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-[var(--color-borde)]">
+      {/* En el celular, una línea por movimiento en vez de seis columnas. */}
+      <ul className="overflow-hidden rounded-2xl border border-[var(--color-borde)] md:hidden">
+        {cargando && (
+          <li className="py-10 text-center text-[var(--color-tenue)]">Cargando…</li>
+        )}
+
+        {!cargando && visibles.length === 0 && (
+          <li className="px-4 py-12 text-center text-[var(--color-tenue)]">
+            {datos.length === 0
+              ? 'Todavía no hay movimientos. Cargá una compra o hacé el conteo inicial desde Insumos.'
+              : 'Nada con ese filtro.'}
+          </li>
+        )}
+
+        {visibles.map((m) => (
+          <li
+            key={m.id}
+            className="flex items-start justify-between gap-3 border-b border-[var(--color-borde)] px-4 py-3 last:border-0"
+          >
+            <div className="min-w-0">
+              <p className="truncate font-semibold">{m.insumo_nombre ?? '—'}</p>
+              <p className="mt-0.5 text-xs text-[var(--color-tenue)]">
+                {m.motivo ?? (m.compra_id ? `compra #${m.compra_id}` : m.tipo)}
+              </p>
+              <p className="mt-0.5 text-xs text-[var(--color-tenue)]">
+                {fecha(m.created_at)}
+                {m.usuario_nombre && ` · ${m.usuario_nombre}`}
+              </p>
+            </div>
+
+            <p
+              className="shrink-0 font-semibold"
+              style={{ color: Number(m.cantidad) > 0 ? 'var(--color-ok)' : 'var(--color-alerta)' }}
+            >
+              {Number(m.cantidad) > 0 ? '+' : ''}
+              {cantidad(m.cantidad)}
+              {m.insumo_unidad && (
+                <span className="block text-right text-xs font-normal text-[var(--color-tenue)]">
+                  {m.insumo_unidad}
+                </span>
+              )}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden overflow-x-auto rounded-2xl border border-[var(--color-borde)] md:block">
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-[var(--color-borde)]">

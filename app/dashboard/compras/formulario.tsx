@@ -66,8 +66,8 @@ export function FormularioCompra({
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-4">
-      <div className="mx-auto my-8 w-full max-w-2xl rounded-2xl border border-[var(--color-borde)] bg-[var(--color-superficie)] p-6">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-2 md:p-4">
+      <div className="modal w-full max-w-2xl rounded-2xl border border-[var(--color-borde)] bg-[var(--color-superficie)]">
         <h2 className="mb-6 text-xl font-bold">Cargar compra</h2>
 
         <div className="mb-4 grid gap-4 sm:grid-cols-2">
@@ -128,32 +128,54 @@ export function FormularioCompra({
               onElegir={(x) => editar(i, { descripcion: x.nombre, insumo_id: x.id })}
             />
 
-            <div className="mt-2 grid grid-cols-[5rem_9rem_1fr_2rem] items-center gap-3">
-              <input
-                value={item.cantidad}
-                onChange={(e) => editar(i, { cantidad: Number(e.target.value) || 0 })}
-                inputMode="decimal"
-                title="Cantidad"
-                className="rounded-xl border border-[var(--color-borde)] bg-black/30 px-3 py-2 text-center outline-none"
-              />
-              <input
-                value={item.costo_unitario}
-                onChange={(e) => editar(i, { costo_unitario: Number(e.target.value) || 0 })}
-                inputMode="decimal"
-                title="Costo por unidad: lo que pagaste"
-                className="rounded-xl border border-[var(--color-borde)] bg-black/30 px-3 py-2 text-right outline-none"
-              />
-              <span className="text-right font-semibold">
-                {money(item.cantidad * item.costo_unitario)}
-              </span>
-              <button
-                onClick={() => setItems(items.filter((_, n) => n !== i))}
-                disabled={items.length === 1}
-                title="Quitar"
-                className="text-[var(--color-tenue)] disabled:opacity-30"
-              >
-                <Trash2 size={16} />
-              </button>
+            {/*
+              Las cuatro columnas fijas no entraban en un celular: sumaban
+              16rem más los espacios, y en 375px el subtotal quedaba aplastado
+              contra el tacho de basura. Ahora son tres celdas —cantidad, costo
+              y el par subtotal/quitar— que en el celular se apilan de a dos con
+              su rótulo, porque sin rótulo no hay forma de saber cuál es cuál.
+            */}
+            <div className="mt-2 grid grid-cols-2 gap-3 md:grid-cols-[5rem_9rem_1fr] md:items-center">
+              <label className="block">
+                <span className="mb-1 block text-xs text-[var(--color-tenue)] md:hidden">
+                  Cantidad
+                </span>
+                <input
+                  value={item.cantidad}
+                  onChange={(e) => editar(i, { cantidad: Number(e.target.value) || 0 })}
+                  inputMode="decimal"
+                  title="Cantidad"
+                  className="w-full rounded-xl border border-[var(--color-borde)] bg-black/30 px-3 py-2 text-center outline-none"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-xs text-[var(--color-tenue)] md:hidden">
+                  Costo por unidad
+                </span>
+                <input
+                  value={item.costo_unitario}
+                  onChange={(e) => editar(i, { costo_unitario: Number(e.target.value) || 0 })}
+                  inputMode="decimal"
+                  title="Costo por unidad: lo que pagaste"
+                  className="w-full rounded-xl border border-[var(--color-borde)] bg-black/30 px-3 py-2 text-right outline-none"
+                />
+              </label>
+
+              <div className="col-span-2 flex items-center justify-between gap-3 md:col-span-1 md:justify-end">
+                <span className="font-semibold">
+                  {money(item.cantidad * item.costo_unitario)}
+                </span>
+                <button
+                  onClick={() => setItems(items.filter((_, n) => n !== i))}
+                  disabled={items.length === 1}
+                  title="Quitar"
+                  aria-label="Quitar renglón"
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-[var(--color-tenue)] disabled:opacity-30"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             </div>
 
             {item.descripcion.trim() && !item.insumo_id && (

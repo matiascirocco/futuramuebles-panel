@@ -75,8 +75,8 @@ export default function Compras() {
   const gastado = useMemo(() => datos.reduce((a, c) => a + Number(c.total), 0), [datos]);
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10 pl-24">
-      <header className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-[var(--color-borde)] pb-6">
+    <div className="pantalla max-w-5xl">
+      <header className="mb-8 pr-12 md:pr-0 flex flex-wrap items-end justify-between gap-4 border-b border-[var(--color-borde)] pb-6">
         <div>
           <p className="eyebrow">Futura Muebles</p>
           <h1 className="text-3xl font-bold">Compras</h1>

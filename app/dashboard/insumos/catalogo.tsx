@@ -76,8 +76,8 @@ export function Catalogo({
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-10 pl-24">
-      <header className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-[var(--color-borde)] pb-6">
+    <div className="pantalla max-w-6xl">
+      <header className="mb-8 pr-12 md:pr-0 flex flex-wrap items-end justify-between gap-4 border-b border-[var(--color-borde)] pb-6">
         <div>
           <p className="eyebrow">Futura Muebles</p>
           <h1 className="text-3xl font-bold">Insumos</h1>
@@ -135,7 +135,101 @@ export function Catalogo({
         </label>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-[var(--color-borde)]">
+      {/*
+        En el celular, fichas en vez de tabla.
+        Seis columnas con scroll horizontal obligan a arrastrar de costado para
+        leer un renglón, y esta es justo la pantalla que se usa parado en el
+        galpón con una mano. La ficha pone adelante lo único que se mira ahí:
+        qué es y cuánto queda.
+      */}
+      <ul className="space-y-3 md:hidden">
+        {cargando && (
+          <li className="rounded-2xl border border-[var(--color-borde)] py-10 text-center text-[var(--color-tenue)]">
+            Cargando…
+          </li>
+        )}
+
+        {!cargando && visibles.length === 0 && (
+          <li className="rounded-2xl border border-[var(--color-borde)] py-12 text-center text-[var(--color-tenue)]">
+            {datos.length === 0 ? 'Todavía no hay insumos cargados.' : 'Nada con ese filtro.'}
+          </li>
+        )}
+
+        {visibles.map((i) => (
+          <li
+            key={i.id}
+            className="rounded-2xl border border-[var(--color-borde)] bg-[var(--color-superficie)] p-4"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-semibold">
+                  {i.nombre}
+                  {!i.activo && (
+                    <span className="ml-2 text-xs font-normal text-[var(--color-tenue)]">
+                      · inactivo
+                    </span>
+                  )}
+                </p>
+                <p className="mt-0.5 text-xs text-[var(--color-tenue)]">
+                  {i.categoria ?? 'Sin categoría'}
+                  {puedeVerCostos && i.costo_ultimo != null && ` · ${money(i.costo_ultimo)}`}
+                </p>
+              </div>
+
+              <div className="shrink-0 text-right">
+                <p
+                  className="text-2xl font-bold leading-none"
+                  style={
+                    Number(i.stock) < 0
+                      ? { color: 'var(--color-alerta)' }
+                      : hayQueReponer(i)
+                        ? { color: 'var(--color-aviso)' }
+                        : undefined
+                  }
+                >
+                  {cantidad(i.stock)}
+                </p>
+                {i.unidad && (
+                  <p className="mt-1 text-xs text-[var(--color-tenue)]">{i.unidad}</p>
+                )}
+              </div>
+            </div>
+
+            {hayQueReponer(i) && (
+              <p
+                className="mt-2 text-xs"
+                style={{
+                  color: Number(i.stock) < 0 ? 'var(--color-alerta)' : 'var(--color-aviso)',
+                }}
+              >
+                {Number(i.stock) < 0
+                  ? 'En negativo: salió más de lo que había cargado'
+                  : `Hay que reponer: el aviso está en ${cantidad(i.alerta_stock)}`}
+              </p>
+            )}
+
+            <div className="mt-3 flex gap-2 border-t border-[var(--color-borde)] pt-3">
+              <button
+                onClick={() => setMoviendo(i)}
+                className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[var(--color-acento)] py-2.5 text-sm font-semibold text-white"
+              >
+                <ArrowDownUp size={15} /> Mover stock
+              </button>
+              {puedeEditar && (
+                <button
+                  onClick={() => setEditando(i)}
+                  aria-label={`Editar ${i.nombre}`}
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--color-borde)]"
+                >
+                  <Pencil size={15} />
+                </button>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden overflow-x-auto rounded-2xl border border-[var(--color-borde)] md:block">
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-[var(--color-borde)]">
@@ -236,7 +330,7 @@ export function Catalogo({
                         onClick={() => setEditando(i)}
                         title="Editar el insumo"
                         aria-label="Editar el insumo"
-                        className="rounded-full border border-[var(--color-borde)] p-2 hover:bg-white/5"
+                        className="grid h-10 w-10 place-items-center rounded-full border border-[var(--color-borde)] hover:bg-white/5"
                       >
                         <Pencil size={14} />
                       </button>
@@ -245,7 +339,7 @@ export function Catalogo({
                       onClick={() => setMoviendo(i)}
                       title="Descontar, ajustar y ver movimientos"
                       aria-label="Mover stock"
-                      className="rounded-full border border-[var(--color-borde)] p-2 hover:bg-white/5"
+                      className="grid h-10 w-10 place-items-center rounded-full border border-[var(--color-borde)] hover:bg-white/5"
                     >
                       <ArrowDownUp size={14} />
                     </button>

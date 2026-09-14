@@ -3,6 +3,13 @@
 import { useEffect, useState } from 'react';
 import { Sun, Moon } from 'lucide-react';
 
+/**
+ * Vive adentro del menú de cuenta, no flotando en una esquina.
+ *
+ * Flotando abajo a la izquierda se superponía con la barra de navegación del
+ * celular, y un botón que tapa a otro es peor que uno que está un toque más
+ * adentro. Acá además se explica solo, con texto en vez de un ícono suelto.
+ */
 export function ThemeToggle() {
   const [claro, setClaro] = useState(false);
 
@@ -25,10 +32,10 @@ export function ThemeToggle() {
   return (
     <button
       onClick={alternar}
-      aria-label={claro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro'}
-      className="fixed bottom-6 left-6 z-40 grid h-12 w-12 place-items-center rounded-full border border-[var(--color-borde)] bg-[var(--color-superficie)] transition hover:scale-105"
+      className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-white/5"
     >
-      {claro ? <Moon size={18} /> : <Sun size={18} />}
+      {claro ? <Moon size={16} /> : <Sun size={16} />}
+      {claro ? 'Tema oscuro' : 'Tema claro'}
     </button>
   );
 }

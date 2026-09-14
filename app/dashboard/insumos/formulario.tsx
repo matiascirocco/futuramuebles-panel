@@ -61,8 +61,8 @@ export function FormularioInsumo({
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-4">
-      <div className="mx-auto my-8 w-full max-w-lg rounded-2xl border border-[var(--color-borde)] bg-[var(--color-superficie)] p-6">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-2 md:p-4">
+      <div className="modal w-full max-w-lg rounded-2xl border border-[var(--color-borde)] bg-[var(--color-superficie)]">
         <h2 className="mb-6 text-xl font-bold">{insumo ? 'Editar insumo' : 'Nuevo insumo'}</h2>
 
         <label className="mb-2 block text-sm">Nombre *</label>
