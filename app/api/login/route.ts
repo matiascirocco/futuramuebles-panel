@@ -20,11 +20,11 @@ async function intentosRecientes(ip: string) {
 export async function POST(req: Request) {
   // Sin esto, un deploy al que le falta una variable contesta 500 sin cuerpo y
   // no hay forma de saber qué pasó desde afuera.
-  const falta = faltaConfig();
-  if (falta) {
-    console.error('[login] falta configuración:', falta);
+  const problema = faltaConfig();
+  if (problema) {
+    console.error('[login] configuración:', problema);
     return NextResponse.json(
-      { error: `El panel está a medio configurar: falta ${falta} en las variables de entorno.` },
+      { error: `El panel está a medio configurar: ${problema}.` },
       { status: 503 }
     );
   }

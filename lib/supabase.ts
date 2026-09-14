@@ -13,7 +13,7 @@ if (typeof window !== 'undefined') {
 let cliente: SupabaseClient | null = null;
 
 /**
- * Qué falta para poder conectarse, o null si está todo.
+ * Qué problema tiene la configuración, en una frase, o null si está bien.
  *
  * Existe porque `conectar()` tira una excepción, y una excepción adentro de un
  * route handler sale como un 500 pelado: el navegador no muestra nada y el
@@ -28,7 +28,25 @@ export function faltaConfig(): string | null {
     !process.env.AUTH_SECRET && 'AUTH_SECRET',
   ].filter(Boolean) as string[];
 
-  return falta.length > 0 ? falta.join(' y ') : null;
+  if (falta.length > 0) {
+    return `falta ${falta.join(' y ')} en las variables de entorno`;
+  }
+
+  // Cargada pero mal. `createClient()` tira una excepción al parsear una URL
+  // inválida, y eso salía por el catch genérico como "no se pudo llegar a la
+  // base" — que manda a revisar la red cuando el problema es un valor mal
+  // pegado. Los tres casos que vimos: el connection string de Postgres en vez
+  // del Project URL, la URL sin protocolo, y un espacio o salto de línea
+  // colado al copiar.
+  const url = process.env.SUPABASE_URL!;
+  if (url !== url.trim()) {
+    return 'SUPABASE_URL tiene espacios o un salto de línea al principio o al final';
+  }
+  if (!/^https:\/\/[^\s/]+\/?$/.test(url)) {
+    return `SUPABASE_URL está mal formada ("${url.slice(0, 30)}…"): va el Project URL, https://xxxx.supabase.co, no el connection string de Postgres`;
+  }
+
+  return null;
 }
 
 /**
