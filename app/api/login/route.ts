@@ -82,11 +82,17 @@ async function entrar(req: Request) {
     // que un panel todavía no tiene base: no dice quién existe ni qué guarda.
     const sinTablas = errorConsulta.code === '42P01' || errorConsulta.code === 'PGRST205';
 
+    // Los errores de Postgres traen código; los que rechaza la puerta de
+    // entrada de Supabase —una API key inválida, por ejemplo— vienen sin
+    // ninguno. Sin el texto no queda nada para mirar salvo el log de Vercel,
+    // así que cuando no hay código se muestra el mensaje tal cual.
     return NextResponse.json(
       {
         error: sinTablas
           ? 'La base está vacía: falta correr db/schema.sql en el SQL Editor de Supabase.'
-          : `La base rechazó la consulta (${errorConsulta.code ?? 'sin código'}). Mirá el log de Vercel.`,
+          : errorConsulta.code
+            ? `La base rechazó la consulta (${errorConsulta.code}). Mirá el log de Vercel.`
+            : `Supabase rechazó la conexión: ${errorConsulta.message}`,
       },
       { status: 503 }
     );
