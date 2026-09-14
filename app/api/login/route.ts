@@ -82,17 +82,19 @@ async function entrar(req: Request) {
     // que un panel todavía no tiene base: no dice quién existe ni qué guarda.
     const sinTablas = errorConsulta.code === '42P01' || errorConsulta.code === 'PGRST205';
 
-    // Los errores de Postgres traen código; los que rechaza la puerta de
-    // entrada de Supabase —una API key inválida, por ejemplo— vienen sin
-    // ninguno. Sin el texto no queda nada para mirar salvo el log de Vercel,
-    // así que cuando no hay código se muestra el mensaje tal cual.
+    // Los errores de Postgres traen código. Los que no llegan a Postgres
+    // vienen sin ninguno, y el más traicionero es "TypeError: fetch failed":
+    // suena a red caída y en realidad es una URL que no resuelve, o sea un
+    // typo en el identificador del proyecto. Por eso va también la URL
+    // configurada — es pública, la lleva cualquier app de Supabase en el
+    // navegador — y sin ella no hay forma de comparar contra la buena.
     return NextResponse.json(
       {
         error: sinTablas
           ? 'La base está vacía: falta correr db/schema.sql en el SQL Editor de Supabase.'
           : errorConsulta.code
             ? `La base rechazó la consulta (${errorConsulta.code}). Mirá el log de Vercel.`
-            : `Supabase rechazó la conexión: ${errorConsulta.message}`,
+            : `Supabase rechazó la conexión: ${errorConsulta.message}. La URL configurada es ${process.env.SUPABASE_URL}`,
       },
       { status: 503 }
     );
