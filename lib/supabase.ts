@@ -42,6 +42,14 @@ export function faltaConfig(): string | null {
   if (url !== url.trim()) {
     return 'SUPABASE_URL tiene espacios o un salto de línea al principio o al final';
   }
+  // El ejemplo de la documentación, pegado tal cual. Pasa porque un
+  // placeholder con forma de valor real se copia sin pensarlo, y después el
+  // síntoma es "fetch failed": un dominio que no existe resuelve igual de mal
+  // que uno mal tipeado, y manda a buscar el problema a la API key.
+  if (/abcdefghijklm|xxxxxxxx|tu-proyecto|TU-PROYECTO/.test(url)) {
+    return `SUPABASE_URL quedó con el ejemplo de la documentación (${url}), no con el Project URL de tu proyecto`;
+  }
+
   if (!/^https:\/\/[^\s/]+\/?$/.test(url)) {
     return `SUPABASE_URL está mal formada ("${url.slice(0, 30)}…"): va el Project URL, https://xxxx.supabase.co, no el connection string de Postgres`;
   }

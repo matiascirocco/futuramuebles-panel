@@ -94,7 +94,7 @@ en esa base.
 
 | Variable | Valor |
 |---|---|
-| `SUPABASE_URL` | el Project URL del paso 1 |
+| `SUPABASE_URL` | el Project URL del paso 1 — **el tuyo**, que termina en `.supabase.co` y empieza con veinte letras al azar. Copialo con el botón de Supabase, no a mano |
 | `SUPABASE_SERVICE_ROLE_KEY` | la service_role key del paso 1 |
 | `AUTH_SECRET` | generalo con el comando de abajo |
 
